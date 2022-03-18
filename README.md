@@ -178,7 +178,7 @@ exit
 ```
 
 
-**#### RTR-R**
+#### RTR-R
 ```
 crypto isakmp policy 1
 encryption aes
@@ -199,7 +199,7 @@ do wr
 
 
 
-**#### RTR-L**
+#### RTR-L
 ```
 crypto isakmp policy 1
 encryption aes
@@ -223,7 +223,7 @@ exit
 ```
 
 
-**#### RTR-R**
+#### RTR-R
 ```
 int tunnel 1
 tunnel mode ipsec ipv4 
@@ -233,7 +233,7 @@ exit
 ```
 
 
-**#### RTR-R**
+#### RTR-R
 ```
 access-list 1 permit 172.16.100.0 0.0.0.255
 ip nat inside source list 1 interface gi 1
@@ -241,7 +241,7 @@ do wr
 ```
 
 
-**#### RTR-L**
+#### RTR-L
 ```
 access-list 1 permit 192.168.100.0 0.0.0.255
 ip nat inside source list 1 interface gi 1
