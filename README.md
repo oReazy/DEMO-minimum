@@ -389,6 +389,5 @@ mv /opt/dns/db.local /opt/dns/db.demo
 mcedit /opt/dns/db.demo
 
 МЕНЯЕМ LOCALHOST на demo!
-[image](https://user-images.githubusercontent.com/43856582/159039833-cfa80232-78ed-4fdb-b2dd-c28466d958d3.png)
-
 ```
+[image](https://user-images.githubusercontent.com/43856582/159039833-cfa80232-78ed-4fdb-b2dd-c28466d958d3.png)
