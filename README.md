@@ -247,3 +247,103 @@ access-list 1 permit 192.168.100.0 0.0.0.255
 ip nat inside source list 1 interface gi 1
 do wr
 ```
+
+
+## Видео №3. Firewall
+Оно тебе точно надо? Я просто спросил. Ладно, погнали дальше
+
+
+#### RTR-L
+```
+ip access-list extended 101
+permit tcp any any established
+permit udp any eq 53 any
+permit udp any eq 123 any
+permit tcp any any eq www
+permit tcp any any eq 443 
+permit tcp any any eq 2222
+permit tcp any any eq 2244
+permit icmp any any
+permit udp any any eq 500
+permit esp any any
+do wr
+exit
+int gi1
+ip access-group 101 in
+do wr
+exit
+do wr
+```
+
+
+#### RTR-R 
+```
+ip access-list extended 101
+permit tcp any any established
+permit udp any eq 53 any
+permit udp any any eq 53
+permit udp any eq 123 any
+permit udp any any eq 123
+permit tcp any any eq www
+permit tcp any any eq 443 
+permit tcp any any eq 2222
+permit tcp any any eq 2244
+permit icmp any any
+permit udp any any eq 500
+permit esp any any
+do wr
+exit
+int gi1
+ip access-group 101 in
+do wr
+exit
+do wr
+```
+
+
+#### RTR-L
+```
+ip nat inside source static tcp 192.168.100.200 53 4.4.4.100 53
+ip nat inside source static udp 192.168.100.200 53 4.4.4.100 53
+do wr
+```
+
+
+#### RTR-R
+```
+ip nat inside source static tcp 172.16.100.100 22 5.5.5.100 2244 😡 (в случае если все ебанет, то напиши 172.168.100.0)
+do wr
+```
+
+
+#### RTR-L
+```
+ip nat inside source static tcp 192.168.100.0 22 4.4.4.100 2222 😡 (в случае если все ебанет, то напиши 192.168.100.0)
+do wr
+```
+
+
+## Видео №3. Nat inside
+Ахуеть, осталось чуть-чуть.
+
+
+#### RTR-R
+```
+int gi1
+ip nat outside
+int gi2
+ip nat inside
+exit
+do wr
+```
+
+
+#### RTR-L
+```
+int gi1
+ip nat outside
+int gi2
+ip nat inside
+exit
+do wr
+```
