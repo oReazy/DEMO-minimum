@@ -109,3 +109,141 @@ Gateway: 3.3.3.1
 
 Нажимаем Yes, когда выскачит справа предупреждение
 ```
+
+
+## Видео №2. Сетевая связанность
+Если вы уже тут, то поздравляю. Ваш IQ больше 133, однако дальше будет моральный террор и убийства. Поехали!
+
+
+#### ISP
+```
+mcedit /etc/sysctl.conf
+net.ipv4.ip_forward=1 — НАДО УБРАТЬ #
+F2
+F10
+
+sysctl -p
+```
+
+
+#### RTR-R
+```
+ip route 0.0.0.0 0.0.0.0 gi1
+do wr
+```
+
+#### RTR-L
+```
+ip route 0.0.0.0 0.0.0.0 gi1
+do wr
+
+int tun1
+ip address 172.16.1.1 255.255.255.0
+tunnel mode gre ip
+tunnel source 4.4.4.100
+tunnel destination 5.5.5.100
+no sh
+exit
+do wr
+```
+
+
+#### RTR-R
+```
+int tun1
+ip address 172.16.1.2 255.255.255.0
+tunnel mode gre ip
+tunnel source 5.5.5.100
+tunnel destination 4.4.4 .100
+no sh
+exit
+do wr
+
+
+router eigrp 6500
+network 172.16.100.0 0.0.0.255
+network 172.16.1.0 0.0.0.255
+do wr
+exit
+```
+
+
+#### RTR-L
+```
+router eigrp 6500
+network 192.168.100.0 0.0.0.255
+network 172.16.1.0 0.0.0.255 
+do wr
+exit
+```
+
+
+**#### RTR-R**
+```
+crypto isakmp policy 1
+encryption aes
+authentication pre-share
+group 15
+hash sha 
+exit
+crypto isakmp key Cisco address 4.4.4.100
+crypto ipsec transform-set CTI esp-aes esp-sha-hmac
+mode tunnel
+exit
+crypto ipsec profile CTP
+set transfrom-set CTI
+exit
+do wr
+```
+
+
+
+
+**#### RTR-L**
+```
+crypto isakmp policy 1
+encryption aes
+authentication pre-share
+group 15
+hash sha 
+exit
+crypto isakmp key Cisco address 5.5.5.100
+crypto ipsec transform-set CTI esp-aes esp-sha-hmac
+mode tunnel
+exit
+crypto ipsec profile CTP
+set transfrom-set CTI
+exit
+do wr
+int tunnel 1
+tunnel mode ipsec ipv4 
+tunnel protection ipsec profile CTP 
+do wr
+exit
+```
+
+
+**#### RTR-R**
+```
+int tunnel 1
+tunnel mode ipsec ipv4 
+tunnel protection ipsec profile CTP 
+do wr
+exit
+```
+
+
+**#### RTR-R**
+```
+access-list 1 permit 172.16.100.0 0.0.0.255
+ip nat inside source list 1 interface gi 1
+do wr
+```
+
+
+**#### RTR-L**
+```
+access-list 1 permit 192.168.100.0 0.0.0.255
+ip nat inside source list 1 interface gi 1
+do wr
+```
