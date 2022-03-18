@@ -323,7 +323,7 @@ do wr
 ```
 
 
-## Видео №3. Nat inside
+## Видео №4. Nat inside
 Ахуеть, осталось чуть-чуть.
 
 
@@ -346,4 +346,49 @@ int gi2
 ip nat inside
 exit
 do wr
+```
+
+
+## Видео №5. DNS
+Открываем шампанское, если доделаем это.
+
+#### ISP
+```
+apt -y install bind9
+mkdir /opt/dns
+mc
+
+С ПОМОЩЬЮ TAB ПЕРЕКЛЮЧАЕМСЯ НА ВТОРУЮ ВКЛАДКУ, ИДЕМ НА КАТАЛОГ НАЗАД
+ИДЕМ В ПАПКУ OPT, DNS
+ОБРАТНО ТАБУЛИРУЕМСЯ
+ИДЕМ В ПАПКУ ETC, ИЩЕМ ПАПКУ BIND И КОПИРУЕМ db.local с помощью F5, нажимаем Enter
+ДАЛЕЕ ИЩЕМ named.conf.options и F4
+
+Раскомментируем forward
+
+forwarders {
+  4.4.4.100
+}
+
+далее в этом же файле в конце дописываем allow-query { any; };
+
+F2, F10
+
+
+
+Далее заходим в named.conf.default-zones и пишем после второй зоны
+zone "demo.wsr" {
+  type master;
+  file "/opt/dns/db.demo";
+};
+F2, F10
+Выходим из mc
+
+
+mv /opt/dns/db.local /opt/dns/db.demo
+mcedit /opt/dns/db.demo
+
+МЕНЯЕМ LOCALHOST на demo!
+[image](https://user-images.githubusercontent.com/43856582/159039833-cfa80232-78ed-4fdb-b2dd-c28466d958d3.png)
+
 ```
