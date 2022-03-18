@@ -379,6 +379,7 @@ F2, F10
 Далее заходим в named.conf.default-zones и пишем после второй зоны
 zone "demo.wsr" {
   type master;
+  allow-transfer { any; };
   file "/opt/dns/db.demo";
 };
 F2, F10
@@ -391,3 +392,52 @@ mcedit /opt/dns/db.demo
 МЕНЯЕМ LOCALHOST на demo!
 ```
 [image](https://user-images.githubusercontent.com/43856582/159039833-cfa80232-78ed-4fdb-b2dd-c28466d958d3.png)
+
+```
+продолжаем...
+
+systemctl enable bind9
+systemctl restart bind9
+systemctl stop apparmor
+systemctl disable apparmor
+systemctl restart bind9
+```
+
+
+#### CLI (ура, винда)
+```
+Windows + R: ENTER
+Свойства интерфейса
+Настраиваем DNS: 3.3.3.1 
+```
+
+
+#### SRV (ура, винда)
+```
+Идем в Server Manager, добавляем DNS для роли, устанавливаем. Все очень просто
+
+Открываем управление DNS, открываем SRV, Forward Lookup Zones (далее Lookup, Reverse), создаем новую зону, примари, называем int.demo.wsr, следующий шаг пропускаем, 3 пункт
+Создаем Reverse зону: пролистываем до Network ID: 192.168.100, в динамичном обновлении ставим галочку на втором пункте
+Создаем Reverse зону: пролистываем до Network ID: 172.16.100, в динамичном обновлении ставим галочку на втором пункте
+Далее добавляем A запись и ставим галку внизу web-l: 192.168.100.100; web-r: 172.16.100.100; srv: 192.168.100.200; rtr-l: 192.168.100.254; rtr-r: 172.16.100.254;
+Далее добавляем CNAME: webapp1: web-l; webapp2: web-r; ntp: srv; dns: srv;
+В Forward создаем новую зону, Secondary Zone, называем demo.wsr, вводим IP адрес: 4.4.4.1, затем нажимаем пкм по нему и Transfer for master, обновляем список
+```
+
+#### WEB-L
+```
+nmtui
+DNS-SERVERS: 192.168.100.200
+Перезапускаем подключение
+```
+
+
+#### WEB-R
+```
+nmtui
+DNS-SERVERS: 192.168.100.200
+Перезапускаем подключение
+```
+
+
+# Мои поздравления, если вы все сделали и у вас нет ошибок, а всем остальным соболезную
